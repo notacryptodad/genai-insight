@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const notes = await getCollection('notes');
+const noteCount = notes.length;
+
+const modules = [
+  {
+    title: 'Pulse',
+    href: '/pulse/',
+    description: 'Curated AI & tech signals — hand-picked daily, summarized by AI. Track what matters in the GenAI landscape.',
+    stat: `${noteCount} signals`,
+    status: 'live',
+  },
+  {
+    title: 'CompareAI',
+    href: '/compareAI/',
+    description: 'Agentic capability matrix across major cloud providers. Side-by-side comparison of AWS, Azure, GCP, and more.',
+    stat: '5 providers',
+    status: 'live',
+  },
+  {
+    title: 'Maturity',
+    href: '#',
+    description: 'GenAI adoption maturity model — assess organizational readiness from Explorer to Transformer level.',
+    stat: '5 levels',
+    status: 'soon',
+  },
+];
+---
+<BaseLayout title="GenAI Insight">
+  <section class="hero">
+    <p class="hero-tagline">Intelligence monitoring for the AI landscape</p>
+    <h1 class="hero-title">GenAI Insight</h1>
+    <p class="hero-desc">A curated knowledge hub for tracking GenAI trends, comparing platform capabilities, and measuring adoption maturity.</p>
+  </section>
+
+  <section class="pillars">
+    <h2 class="section-label">Modules</h2>
+    <div class="pillar-grid">
+      {modules.map((m) => (
+        <a href={m.href} class:list={['pillar-card', { disabled: m.status === 'soon' }]}>
+          <div class="pillar-top">
+            <span class:list={['pillar-status', `status-${m.status}`]}>
+              {m.status === 'live' ? 'LIVE' : 'COMING SOON'}
+            </span>
+            <span class="pillar-stat">{m.stat}</span>
+          </div>
+          <h3 class="pillar-title">{m.title}</h3>
+          <p class="pillar-desc">{m.description}</p>
+          {m.status === 'live' && (
+            <span class="pillar-link">Open <span class="arrow">→</span></span>
+          )}
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 2.5rem;
+  }
+  .hero-tagline {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 0.5rem;
+  }
+  .hero-title {
+    font-size: 2.2rem;
+    font-weight: 750;
+    letter-spacing: -0.04em;
+    margin: 0 0 0.75rem;
+    line-height: 1.1;
+  }
+  .hero-desc {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 52ch;
+  }
+  .pillars {
+    padding-bottom: 3rem;
+  }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-tertiary);
+    margin: 0 0 1rem;
+  }
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .pillar-card {
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    display: flex;
+    flex-direction: column;
+  }
+  .pillar-card:hover:not(.disabled) {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  .pillar-card.disabled {
+    opacity: 0.55;
+    cursor: default;
+    pointer-events: none;
+  }
+  .pillar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  .pillar-status {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+  }
+  .status-live {
+    color: #059669;
+    background: rgba(5, 150, 105, 0.1);
+  }
+  .status-soon {
+    color: var(--color-text-tertiary);
+    background: var(--color-surface);
+  }
+  .pillar-stat {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-text-tertiary);
+  }
+  .pillar-title {
+    font-size: 1.15rem;
+    font-weight: 660;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.4rem;
+  }
+  .pillar-desc {
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    margin: 0;
+    flex: 1;
+  }
+  .pillar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-accent);
+  }
+  .pillar-card:hover .arrow {
+    transform: translateX(3px);
+  }
+  .arrow {
+    transition: transform 0.2s;
+  }
+</style>

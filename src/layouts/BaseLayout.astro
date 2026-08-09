@@ -1,0 +1,240 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'GenAI Insight — AI intelligence monitoring hub' } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <title>{title}</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;550;600;660;700;720;750&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script is:inline>
+    (function() {
+      var theme = localStorage.getItem('theme') || 'auto';
+      if (theme !== 'auto') document.documentElement.setAttribute('data-theme', theme);
+      var lang = localStorage.getItem('lang') || 'en';
+      document.documentElement.lang = lang;
+      document.documentElement.setAttribute('data-lang', lang);
+    })();
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <nav class="header-nav" aria-label="Main navigation">
+        <a href="/" class="header-brand">
+          <svg class="brand-logo" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+            <circle cx="50" cy="50" r="32" stroke="currentColor" stroke-width="1.5" opacity="0.2"/>
+            <circle cx="50" cy="50" r="22" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+            <circle cx="50" cy="50" r="12" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>
+            <circle cx="50" cy="50" r="4" fill="currentColor"/>
+            <path d="M50 18 L50 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M50 82 L50 90" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M18 50 L10 50" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M82 50 L90 50" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="brand-text">GenAI Insight</span>
+        </a>
+        <div class="nav-links">
+          <a href="/pulse/">Pulse</a>
+          <a href="/compareAI/">CompareAI</a>
+        </div>
+      </nav>
+      <div class="header-actions">
+        <fieldset class="theme-toggle" aria-label="Theme preference">
+          <button data-theme-value="light" class="theme-btn" aria-label="Light theme">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          </button>
+          <button data-theme-value="auto" class="theme-btn" aria-label="System theme">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </button>
+          <button data-theme-value="dark" class="theme-btn" aria-label="Dark theme">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </fieldset>
+        <select id="lang-switcher" class="lang-select" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="zh">中文</option>
+        </select>
+      </div>
+    </div>
+  </header>
+  <main class="container main-content">
+    <slot />
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="footer-text">&copy; 2026 GenAI Insight</span>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+    border-bottom: 1px solid var(--color-border);
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text);
+  }
+  .header-brand:hover { color: var(--color-text); }
+  .brand-logo {
+    width: 22px;
+    height: 22px;
+    color: var(--color-accent);
+  }
+  .brand-text {
+    font-weight: 660;
+    font-size: 0.9rem;
+    letter-spacing: -0.025em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 1.25rem;
+  }
+  .nav-links a {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--color-text-tertiary);
+    letter-spacing: -0.01em;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--color-text); }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .theme-toggle {
+    display: flex;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+  .theme-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 5px 7px;
+    cursor: pointer;
+    color: var(--color-text-tertiary);
+    transition: color 0.15s, background 0.15s;
+  }
+  .theme-btn:hover {
+    color: var(--color-text-secondary);
+    background: var(--color-surface);
+  }
+  .theme-btn.active {
+    color: var(--color-accent);
+    background: var(--color-accent-subtle);
+  }
+  .lang-select {
+    appearance: none;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.3em 0.55em;
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-family: var(--font-mono);
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .lang-select:hover {
+    border-color: var(--color-text-tertiary);
+    color: var(--color-text-secondary);
+  }
+  .main-content {
+    padding-top: 3rem;
+    padding-bottom: 5rem;
+    min-height: calc(100vh - var(--header-height) - 48px);
+  }
+  .site-footer {
+    border-top: 1px solid var(--color-border);
+    padding: 1rem 0;
+  }
+  .footer-text {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: var(--color-text-tertiary);
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 640px) {
+    .brand-text { display: none; }
+    .header-nav { gap: 1rem; }
+  }
+</style>
+
+<script>
+  const themeToggle = document.querySelector('.theme-toggle')!;
+  const themeBtns = themeToggle.querySelectorAll('.theme-btn');
+  const langSwitcher = document.getElementById('lang-switcher') as HTMLSelectElement;
+
+  function applyTheme(theme: string) {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    localStorage.setItem('theme', theme);
+    themeBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-theme-value') === theme);
+    });
+  }
+
+  applyTheme(localStorage.getItem('theme') || 'auto');
+
+  themeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyTheme(btn.getAttribute('data-theme-value')!);
+    });
+  });
+
+  const storedLang = localStorage.getItem('lang') || 'en';
+  langSwitcher.value = storedLang;
+  langSwitcher.addEventListener('change', () => {
+    const lang = langSwitcher.value;
+    localStorage.setItem('lang', lang);
+    document.documentElement.lang = lang;
+    document.documentElement.setAttribute('data-lang', lang);
+  });
+</script>

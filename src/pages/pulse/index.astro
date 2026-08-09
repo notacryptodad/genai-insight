@@ -1,0 +1,373 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const notes = (await getCollection('notes'))
+  .sort((a, b) => (b.data.date ?? '').localeCompare(a.data.date ?? ''));
+
+const allTags = [...new Set(notes.flatMap(n => n.data.tags ?? []))].sort();
+
+function getDomain(url: string | undefined): string {
+  if (!url) return '';
+  try { return new URL(url).hostname.replace('www.', ''); } catch { return ''; }
+}
+---
+<BaseLayout title="Pulse — GenAI Insight">
+  <header class="pulse-header">
+    <div class="pulse-title-row">
+      <h1 class="pulse-title">Pulse</h1>
+      <span class="pulse-count">{notes.length}</span>
+    </div>
+    <p class="pulse-subtitle">Hand-picked signals, summarized by AI</p>
+  </header>
+
+  <div class="filter-bar">
+    <div class="search-box">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="search" id="pulse-search" placeholder="Search notes…" aria-label="Search notes" class="search-input" />
+    </div>
+    <div class="tag-bar" role="toolbar" aria-label="Filter by tag">
+      <button class="tag-chip" data-tag="starred">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <span class="starred-count">0</span>
+      </button>
+      <button class="tag-chip active" data-tag="all">all</button>
+      {allTags.map(tag => (
+        <button class="tag-chip" data-tag={tag}>{tag}</button>
+      ))}
+    </div>
+  </div>
+
+  <ol class="feed" role="feed" aria-label="Research notes feed">
+    {notes.map((note) => (
+      <li class="feed-item" data-tags={JSON.stringify(note.data.tags ?? [])} data-slug={note.id} role="article">
+        <a href={`/pulse/notes/${note.id}/`} class="feed-link">
+          <div class="feed-thumb">
+            {note.data.ogImage ? (
+              <img src={note.data.ogImage} alt="" class="thumb-img" loading="lazy" />
+            ) : note.data.url ? (
+              <img src={`https://www.google.com/s2/favicons?domain=${getDomain(note.data.url)}&sz=32`} alt="" class="thumb-favicon" loading="lazy" />
+            ) : (
+              <div class="thumb-placeholder"></div>
+            )}
+          </div>
+          <div class="feed-body">
+            <div class="feed-meta">
+              <time class="feed-date" datetime={note.data.date}>{note.data.date ?? ''}</time>
+              {note.data.source && <span class="feed-source">{note.data.source}</span>}
+            </div>
+            <h2 class="feed-headline">{note.data.title || note.id}</h2>
+          </div>
+          {note.data.tags?.length > 0 && (
+            <div class="feed-tags">
+              {note.data.tags.map(tag => <span class="tag">{tag}</span>)}
+            </div>
+          )}
+        </a>
+        <button class="star-btn" data-slug={note.id} aria-label="Star this note">
+          <svg class="star-outline" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="star-filled" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </button>
+      </li>
+    ))}
+  </ol>
+</BaseLayout>
+
+<style>
+  .pulse-header {
+    margin-bottom: 2rem;
+  }
+  .pulse-title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .pulse-title {
+    font-size: 1.5rem;
+    font-weight: 750;
+    letter-spacing: -0.035em;
+    margin: 0;
+  }
+  .pulse-count {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--color-text-tertiary);
+    background: var(--color-surface);
+    padding: 0.15em 0.45em;
+    border-radius: 4px;
+  }
+  .pulse-subtitle {
+    color: var(--color-text-tertiary);
+    font-size: 0.82rem;
+    font-family: var(--font-mono);
+    margin: 0.3rem 0 0;
+    letter-spacing: 0.01em;
+  }
+  .filter-bar {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .search-box {
+    position: relative;
+    margin-bottom: 0.75rem;
+  }
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-tertiary);
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem 0.5rem 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    transition: border-color 0.15s;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+  .search-input::placeholder {
+    color: var(--color-text-tertiary);
+  }
+  .tag-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .tag-chip {
+    font-family: var(--font-mono);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    padding: 0.25em 0.6em;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    letter-spacing: 0.01em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+  }
+  .tag-chip:hover {
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    border-color: var(--color-text-tertiary);
+  }
+  .tag-chip.active {
+    background: var(--color-accent-subtle);
+    color: var(--color-accent);
+    border-color: transparent;
+  }
+  .tag-chip[data-tag="starred"] {
+    color: var(--color-text-tertiary);
+  }
+  .tag-chip[data-tag="starred"].active {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    border-color: transparent;
+  }
+  .feed {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .feed-item {
+    border-bottom: 1px solid var(--color-border-subtle);
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .feed-item.hidden { display: none; }
+  .feed-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    text-decoration: none;
+    color: var(--color-text);
+    flex: 1;
+    min-width: 0;
+    transition: opacity 0.15s;
+  }
+  .feed-link:hover { opacity: 0.75; }
+  .feed-thumb {
+    flex-shrink: 0;
+    width: 48px;
+    height: 36px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--color-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .thumb-favicon {
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+  }
+  .thumb-placeholder {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    background: var(--color-border);
+    opacity: 0.4;
+  }
+  .feed-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .feed-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.15rem;
+  }
+  .feed-date {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 400;
+    color: var(--color-text-tertiary);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .feed-source {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--color-text-tertiary);
+    opacity: 0.7;
+  }
+  .feed-headline {
+    font-size: 0.88rem;
+    font-weight: 520;
+    margin: 0;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .feed-tags {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+  }
+  .star-btn {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    color: var(--color-text-tertiary);
+    transition: color 0.15s, transform 0.15s;
+    display: flex;
+    align-items: center;
+  }
+  .star-btn:hover { color: #f59e0b; transform: scale(1.15); }
+  .star-btn .star-filled { display: none; }
+  .star-btn.starred { color: #f59e0b; }
+  .star-btn.starred .star-outline { display: none; }
+  .star-btn.starred .star-filled { display: block; }
+
+  @media (max-width: 640px) {
+    .feed-tags { display: none; }
+    .feed-headline { white-space: normal; }
+    .feed-thumb { width: 40px; height: 30px; }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.tag-chip');
+    const items = document.querySelectorAll<HTMLLIElement>('.feed-item');
+    const searchInput = document.getElementById('pulse-search') as HTMLInputElement;
+    const starBtns = document.querySelectorAll<HTMLButtonElement>('.star-btn');
+    const starredChip = document.querySelector<HTMLButtonElement>('[data-tag="starred"]');
+    const starredCount = starredChip?.querySelector('.starred-count');
+
+    let activeTag = 'all';
+    let query = '';
+
+    function getStarred(): string[] {
+      try { return JSON.parse(localStorage.getItem('starred-notes') || '[]'); } catch { return []; }
+    }
+
+    function setStarred(slugs: string[]) {
+      localStorage.setItem('starred-notes', JSON.stringify(slugs));
+      updateStarUI();
+    }
+
+    function updateStarUI() {
+      const starred = getStarred();
+      starBtns.forEach(btn => {
+        btn.classList.toggle('starred', starred.includes(btn.dataset.slug || ''));
+      });
+      if (starredCount) starredCount.textContent = String(starred.length);
+      filterItems();
+    }
+
+    function filterItems() {
+      const starred = getStarred();
+      items.forEach(item => {
+        const tags: string[] = JSON.parse(item.dataset.tags || '[]');
+        const slug = item.dataset.slug || '';
+        const headline = item.querySelector('.feed-headline')?.textContent?.toLowerCase() || '';
+        const source = item.querySelector('.feed-source')?.textContent?.toLowerCase() || '';
+
+        const matchesTag = activeTag === 'all'
+          || (activeTag === 'starred' ? starred.includes(slug) : tags.includes(activeTag));
+        const matchesSearch = !query || headline.includes(query) || source.includes(query) || tags.some(t => t.includes(query));
+
+        item.classList.toggle('hidden', !matchesTag || !matchesSearch);
+      });
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeTag = btn.dataset.tag || 'all';
+        filterItems();
+      });
+    });
+
+    searchInput.addEventListener('input', () => {
+      query = searchInput.value.toLowerCase().trim();
+      filterItems();
+    });
+
+    starBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const slug = btn.dataset.slug || '';
+        const starred = getStarred();
+        if (starred.includes(slug)) {
+          setStarred(starred.filter(s => s !== slug));
+        } else {
+          setStarred([...starred, slug]);
+        }
+      });
+    });
+
+    updateStarUI();
+  });
+</script>

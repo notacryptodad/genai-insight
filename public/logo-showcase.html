@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GenAI Insight — Logo Concepts</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+      background: #09090b;
+      color: #fafafa;
+      min-height: 100vh;
+      padding: 3rem 1.5rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+    }
+    .header p {
+      color: #71717a;
+      font-size: 0.9rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 2.5rem 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover {
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+    }
+    .logo-container {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fafafa;
+    }
+    .logo-container svg {
+      width: 80px;
+      height: 80px;
+    }
+    .card-info {
+      text-align: center;
+    }
+    .card-info h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+    .card-info p {
+      font-size: 0.8rem;
+      color: #71717a;
+      line-height: 1.4;
+    }
+    .variant-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #3b82f6;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .color-row {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+    }
+    .color-demo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+    }
+    .color-demo svg { width: 40px; height: 40px; }
+    .color-demo.light { background: #ffffff; color: #111827; border-color: #e5e7eb; }
+    .color-demo.accent { color: #3b82f6; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>GenAI Insight — Logo Concepts</h1>
+    <p>6 variants exploring signal, pulse, intelligence, and network metaphors</p>
+  </div>
+
+  <div class="grid">
+    <!-- Variant 1: Pulse Signal -->
+    <div class="card">
+      <span class="variant-label">Variant 1</span>
+      <div class="logo-container">
+        <svg viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="32" stroke="currentColor" stroke-width="1.5" opacity="0.2"/>
+          <circle cx="50" cy="50" r="22" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+          <circle cx="50" cy="50" r="12" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>
+          <circle cx="50" cy="50" r="4" fill="currentColor"/>
+          <path d="M50 18 L50 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M50 82 L50 90" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M18 50 L10 50" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M82 50 L90 50" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-info">
+        <h3>Radar Pulse</h3>
+        <p>Concentric rings radiating from center — signal detection and awareness. The crosshair extensions suggest precision.</p>
+      </div>
+    </div>
+
+    <!-- Variant 2: Neural Prism -->
+    <div class="card">
+      <span class="variant-label">Variant 2</span>
+      <div class="logo-container">
+        <svg viewBox="0 0 100 100" fill="none">
+          <polygon points="50,20 78,65 22,65" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="50" cy="20" r="3.5" fill="currentColor"/>
+          <circle cx="78" cy="65" r="3.5" fill="currentColor"/>
+          <circle cx="22" cy="65" r="3.5" fill="currentColor"/>
+          <circle cx="50" cy="50" r="3" fill="currentColor"/>
+          <line x1="50" y1="20" x2="50" y2="50" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="78" y1="65" x2="50" y2="50" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="22" y1="65" x2="50" y2="50" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M50 65 L50 82" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="card-info">
+        <h3>Neural Prism</h3>
+        <p>Triangle nodes converging to a central intelligence point. Information flows inward and synthesizes — knowledge distillation.</p>
+      </div>
+    </div>
+
+    <!-- Variant 3: Signal Wave -->
+    <div class="card">
+      <span class="variant-label">Variant 3</span>
+      <div class="logo-container">
+        <svg viewBox="0 0 100 100" fill="none">
+          <rect x="24" y="24" width="52" height="52" rx="4" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+          <polyline points="28,50 36,50 40,35 46,62 52,42 58,56 64,44 68,50 72,50" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="46" cy="62" r="2.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="52" cy="42" r="2.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="64" cy="44" r="2.5" fill="currentColor" opacity="0.7"/>
+        </svg>
+      </div>
+      <div class="card-info">
+        <h3>Signal Wave</h3>
+        <p>EKG-style pulse line within a viewport frame — monitoring the heartbeat of AI trends. Data points mark key signals.</p>
+      </div>
+    </div>
+
+    <!-- Variant 4: Layered Lens -->
+    <div class="card">
+      <span class="variant-label">Variant 4</span>
+      <div class="logo-container">
+        <svg viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="2"/>
+          <circle cx="50" cy="50" r="20" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+          <path d="M50 20 A30 30 0 0 1 80 50" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="50" cy="50" r="5" fill="currentColor"/>
+          <path d="M50 45 L50 30" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M55 50 L65 50" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-info">
+        <h3>Layered Lens</h3>
+        <p>Concentric circles with a bold arc sweep — a lens focusing on a quadrant. The directional lines suggest insight extraction.</p>
+      </div>
+    </div>
+
+    <!-- Variant 5: Dot Matrix G -->
+    <div class="card">
+      <span class="variant-label">Variant 5</span>
+      <div class="logo-container">
+        <svg viewBox="0 0 100 100" fill="none">
+          <!-- G shape made of dots -->
+          <circle cx="62" cy="30" r="2.5" fill="currentColor" opacity="0.4"/>
+          <circle cx="54" cy="26" r="2.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="46" cy="26" r="2.5" fill="currentColor" opacity="0.6"/>
+          <circle cx="38" cy="30" r="2.5" fill="currentColor" opacity="0.7"/>
+          <circle cx="33" cy="37" r="2.5" fill="currentColor" opacity="0.8"/>
+          <circle cx="30" cy="45" r="2.5" fill="currentColor" opacity="0.9"/>
+          <circle cx="30" cy="55" r="2.5" fill="currentColor"/>
+          <circle cx="33" cy="63" r="2.5" fill="currentColor"/>
+          <circle cx="38" cy="70" r="2.5" fill="currentColor"/>
+          <circle cx="46" cy="74" r="2.5" fill="currentColor"/>
+          <circle cx="54" cy="74" r="2.5" fill="currentColor"/>
+          <circle cx="62" cy="70" r="2.5" fill="currentColor"/>
+          <circle cx="66" cy="63" r="3" fill="currentColor"/>
+          <circle cx="66" cy="55" r="3" fill="currentColor"/>
+          <circle cx="58" cy="55" r="2.5" fill="currentColor" opacity="0.7"/>
+          <circle cx="50" cy="55" r="2" fill="currentColor" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="card-info">
+        <h3>Dot Matrix G</h3>
+        <p>The letter G formed by graduated dots — data points coalescing into meaning. Opacity gradient shows signal strength.</p>
+      </div>
+    </div>
+
+    <!-- Variant 6: Insight Eye -->
+    <div class="card">
+      <span class="variant-label">Variant 6</span>
+      <div class="logo-container">
+        <svg viewBox="0 0 100 100" fill="none">
+          <path d="M15 50 Q50 25 85 50 Q50 75 15 50 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="50" cy="50" r="12" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="50" cy="50" r="5" fill="currentColor"/>
+          <path d="M50 38 L50 32" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M50 62 L50 68" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M38 50 L32 50" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M62 50 L68 50" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-info">
+        <h3>Insight Eye</h3>
+        <p>An eye form with crosshair iris — seeing patterns others miss. The almond shape is organic, the internals are precise and technical.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Color application demos -->
+  <div class="color-row">
+    <div class="color-demo">
+      <svg viewBox="0 0 100 100" fill="none" style="color: #fafafa">
+        <circle cx="50" cy="50" r="32" stroke="currentColor" stroke-width="1.5" opacity="0.2"/>
+        <circle cx="50" cy="50" r="22" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+        <circle cx="50" cy="50" r="12" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="50" cy="50" r="4" fill="currentColor"/>
+        <path d="M50 18 L50 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M50 82 L50 90" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M18 50 L10 50" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M82 50 L90 50" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span style="font-size: 0.8rem; color: #71717a;">Dark mono</span>
+    </div>
+    <div class="color-demo light">
+      <svg viewBox="0 0 100 100" fill="none" style="color: #111827">
+        <circle cx="50" cy="50" r="32" stroke="currentColor" stroke-width="1.5" opacity="0.2"/>
+        <circle cx="50" cy="50" r="22" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+        <circle cx="50" cy="50" r="12" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="50" cy="50" r="4" fill="currentColor"/>
+        <path d="M50 18 L50 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M50 82 L50 90" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M18 50 L10 50" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M82 50 L90 50" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span style="font-size: 0.8rem; color: #71717a;">Light mono</span>
+    </div>
+    <div class="color-demo accent">
+      <svg viewBox="0 0 100 100" fill="none" style="color: #3b82f6">
+        <circle cx="50" cy="50" r="32" stroke="currentColor" stroke-width="1.5" opacity="0.2"/>
+        <circle cx="50" cy="50" r="22" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+        <circle cx="50" cy="50" r="12" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="50" cy="50" r="4" fill="currentColor"/>
+        <path d="M50 18 L50 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M50 82 L50 90" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M18 50 L10 50" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M82 50 L90 50" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span style="font-size: 0.8rem; color: #71717a;">Accent blue</span>
+    </div>
+  </div>
+</body>
+</html>

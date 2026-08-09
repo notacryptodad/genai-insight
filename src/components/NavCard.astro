@@ -1,0 +1,46 @@
+---
+interface Props {
+  title: string;
+  href: string;
+  description: string;
+  icon: string;
+}
+
+const { title, href, description, icon } = Astro.props;
+---
+<a href={href} class="nav-card">
+  <span class="nav-card-icon">{icon}</span>
+  <h3 class="nav-card-title">{title}</h3>
+  <p class="nav-card-desc">{description}</p>
+</a>
+
+<style>
+  .nav-card {
+    display: block;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .nav-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  }
+  .nav-card-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  .nav-card-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+  }
+  .nav-card-desc {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+</style>
