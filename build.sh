@@ -4,7 +4,6 @@ set -euo pipefail
 echo "=== 1. Init submodules ==="
 if [ -n "${GH_TOKEN:-}" ]; then
   git config submodule.submodules/hermes-knowledge.url "https://${GH_TOKEN}@github.com/notacryptodad/hermes-knowledge.git"
-  git config submodule.submodules/compareAI.url "https://${GH_TOKEN}@github.com/notacryptodad/compareAI.git"
 fi
 git submodule update --init --recursive
 
