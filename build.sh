@@ -2,10 +2,13 @@
 set -euo pipefail
 
 echo "=== 1. Init submodules ==="
-if [ -n "${GH_TOKEN:-}" ]; then
-  git config submodule.submodules/hermes-knowledge.url "https://${GH_TOKEN}@github.com/notacryptodad/hermes-knowledge.git"
-fi
 git submodule update --init --recursive
+
+echo "=== 1b. Clone hermes-knowledge (private) ==="
+if [ ! -d "submodules/hermes-knowledge/.git" ]; then
+  rm -rf submodules/hermes-knowledge
+  git clone --depth 1 "https://${GH_TOKEN}@github.com/notacryptodad/hermes-knowledge.git" submodules/hermes-knowledge
+fi
 
 echo "=== 2. Build compareAI ==="
 pushd submodules/compareAI

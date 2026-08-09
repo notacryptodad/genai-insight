@@ -1,6 +1,3 @@
-[submodule "submodules/hermes-knowledge"]
-	path = submodules/hermes-knowledge
-	url = https://github.com/notacryptodad/hermes-knowledge.git
 [submodule "submodules/compareAI"]
 	path = submodules/compareAI
 	url = https://github.com/notacryptodad/compareAI.git
