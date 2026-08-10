@@ -17,10 +17,20 @@ async function loadCache() {
   }
 }
 
-function extractOgImage(html) {
+function extractOgImage(html, url) {
   const match = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
     || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
-  return match ? match[1] : null;
+  if (!match) return null;
+  const img = match[1];
+  // Threads profile pics are useless (tiny avatars, not post content)
+  if (url.includes('threads.com') && (/\/t51\.82787-19\//.test(img) || /\/t51\.2885-19\//.test(img))) {
+    return null;
+  }
+  // WeChat images are hotlink-protected, won't render on external sites
+  if (img.includes('mmbiz.qpic.cn')) {
+    return null;
+  }
+  return img;
 }
 
 async function fetchOgImage(url) {
@@ -36,7 +46,7 @@ async function fetchOgImage(url) {
     const contentType = res.headers.get('content-type') || '';
     if (!contentType.includes('text/html')) return null;
     const text = await res.text();
-    return extractOgImage(text);
+    return extractOgImage(text, url);
   } catch {
     return null;
   } finally {
