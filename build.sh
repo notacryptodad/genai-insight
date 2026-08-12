@@ -26,10 +26,7 @@ node scripts/fetch-og-images.mjs
 echo "=== 3c. Re-prepare notes with OG data ==="
 node scripts/prepare-notes.mjs
 
-echo "=== 4. Install Node dependencies ==="
-npm ci
-
-echo "=== 5. Build Astro site ==="
+echo "=== 4. Build Astro site ==="
 npx astro build
 
 echo "=== 6. Merge compareAI into dist ==="
