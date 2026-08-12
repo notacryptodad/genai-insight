@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "=== 1. Init submodules ==="
-git submodule update --init --recursive
+echo "=== 1. Init submodules (pull latest) ==="
+git submodule update --init --remote --recursive
 
 echo "=== 1b. Clone hermes-knowledge (private) ==="
 if [ ! -d "submodules/hermes-knowledge/.git" ]; then
