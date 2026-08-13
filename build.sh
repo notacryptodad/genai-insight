@@ -8,6 +8,8 @@ echo "=== 1b. Clone hermes-knowledge (private) ==="
 if [ ! -d "submodules/hermes-knowledge/.git" ]; then
   rm -rf submodules/hermes-knowledge
   git clone --depth 1 "https://${GH_TOKEN}@github.com/notacryptodad/hermes-knowledge.git" submodules/hermes-knowledge
+else
+  cd submodules/hermes-knowledge && git pull origin main && cd ../..
 fi
 
 echo "=== 2. Build compareAI ==="
