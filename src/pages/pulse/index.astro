@@ -25,6 +25,10 @@ function getDomain(url: string | undefined): string {
     <div class="search-box">
       <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       <input type="search" id="pulse-search" placeholder="Search notes…" aria-label="Search notes" class="search-input" />
+      <button type="button" id="pulse-copy-link" class="copy-link-btn" aria-label="Copy filter link">
+        <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="1.5"/><path d="M15 9V5.5A1.5 1.5 0 0 0 13.5 4h-8A1.5 1.5 0 0 0 4 5.5v8A1.5 1.5 0 0 0 5.5 15H9"/></svg>
+        <svg class="copy-success-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+      </button>
     </div>
     <div class="tag-bar" role="toolbar" aria-label="Filter by tag">
       <button class="tag-chip" data-tag="starred">
@@ -123,7 +127,7 @@ function getDomain(url: string | undefined): string {
   }
   .search-input {
     width: 100%;
-    padding: 0.5rem 0.75rem 0.5rem 2rem;
+    padding: 0.5rem 2.5rem 0.5rem 2rem;
     font-family: var(--font-mono);
     font-size: 0.8rem;
     background: var(--color-surface);
@@ -138,6 +142,46 @@ function getDomain(url: string | undefined): string {
   }
   .search-input::placeholder {
     color: var(--color-text-tertiary);
+  }
+  .copy-link-btn {
+    position: absolute;
+    top: 50%;
+    right: 0.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    color: var(--color-text-tertiary);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    z-index: 1;
+    transform: translateY(-50%);
+    transition: color 0.15s, background 0.15s;
+  }
+  .copy-link-btn:hover,
+  .copy-link-btn:focus-visible {
+    color: var(--color-text-secondary);
+    background: var(--color-border-subtle);
+  }
+  .copy-link-btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+  }
+  .copy-link-btn[data-copied="true"] {
+    color: var(--color-accent);
+  }
+  .copy-link-btn .copy-success-icon {
+    display: none;
+  }
+  .copy-link-btn[data-copied="true"] .copy-icon {
+    display: none;
+  }
+  .copy-link-btn[data-copied="true"] .copy-success-icon {
+    display: block;
   }
   .tag-bar {
     display: flex;
@@ -299,12 +343,14 @@ function getDomain(url: string | undefined): string {
     const buttons = document.querySelectorAll<HTMLButtonElement>('.tag-chip');
     const items = document.querySelectorAll<HTMLLIElement>('.feed-item');
     const searchInput = document.getElementById('pulse-search') as HTMLInputElement;
+    const copyLinkBtn = document.getElementById('pulse-copy-link') as HTMLButtonElement;
     const starBtns = document.querySelectorAll<HTMLButtonElement>('.star-btn');
     const starredChip = document.querySelector<HTMLButtonElement>('[data-tag="starred"]');
     const starredCount = starredChip?.querySelector('.starred-count');
 
     let activeTag = 'all';
     let query = '';
+    const initialQuery = new URLSearchParams(window.location.search).get('k')?.trim() || '';
 
     function getStarred(): string[] {
       try { return JSON.parse(localStorage.getItem('starred-notes') || '[]'); } catch { return []; }
@@ -352,6 +398,48 @@ function getDomain(url: string | undefined): string {
     searchInput.addEventListener('input', () => {
       query = searchInput.value.toLowerCase().trim();
       filterItems();
+    });
+
+    if (initialQuery) {
+      searchInput.value = initialQuery;
+      query = initialQuery.toLowerCase();
+    }
+
+    function getFilterUrl(): string {
+      const url = new URL(window.location.href);
+      const keyword = searchInput.value.trim();
+      if (keyword) {
+        url.searchParams.set('k', keyword);
+      } else {
+        url.searchParams.delete('k');
+      }
+      return url.toString();
+    }
+
+    let copyResetTimer = 0;
+    copyLinkBtn.addEventListener('click', async () => {
+      const filterUrl = getFilterUrl();
+      try {
+        await navigator.clipboard.writeText(filterUrl);
+      } catch {
+        const fallback = document.createElement('textarea');
+        fallback.value = filterUrl;
+        fallback.setAttribute('readonly', '');
+        fallback.style.position = 'fixed';
+        fallback.style.opacity = '0';
+        document.body.appendChild(fallback);
+        fallback.select();
+        document.execCommand('copy');
+        fallback.remove();
+      }
+
+      copyLinkBtn.dataset.copied = 'true';
+      copyLinkBtn.setAttribute('aria-label', 'Filter link copied');
+      window.clearTimeout(copyResetTimer);
+      copyResetTimer = window.setTimeout(() => {
+        copyLinkBtn.dataset.copied = 'false';
+        copyLinkBtn.setAttribute('aria-label', 'Copy filter link');
+      }, 1600);
     });
 
     starBtns.forEach(btn => {
