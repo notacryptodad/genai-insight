@@ -4,13 +4,18 @@ set -euo pipefail
 echo "=== 1. Init submodules (pull latest) ==="
 git submodule update --init --remote --recursive
 
-echo "=== 1b. Clone hermes-knowledge ==="
+echo "=== 1b. Clone hermes-knowledge (private) ==="
 HERMES_REPO="https://github.com/notacryptodad/hermes-knowledge.git"
+GH_TOKEN="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
+if [ -z "$GH_TOKEN" ]; then
+  echo "ERROR: GH_TOKEN (or GITHUB_TOKEN) must be configured to clone private hermes-knowledge." >&2
+  exit 1
+fi
 if [ ! -d "submodules/hermes-knowledge/.git" ]; then
   rm -rf submodules/hermes-knowledge
-  git clone --depth 1 "$HERMES_REPO" submodules/hermes-knowledge
+  git -c "http.extraheader=AUTHORIZATION: bearer ${GH_TOKEN}" clone --depth 1 "$HERMES_REPO" submodules/hermes-knowledge
 else
-  cd submodules/hermes-knowledge && git pull origin main && cd ../..
+  cd submodules/hermes-knowledge && git -c "http.extraheader=AUTHORIZATION: bearer ${GH_TOKEN}" pull origin main && cd ../..
 fi
 
 echo "=== 2. Build compareAI ==="
