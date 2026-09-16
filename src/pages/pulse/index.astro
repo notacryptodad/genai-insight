@@ -305,6 +305,7 @@ function getDomain(url: string | undefined): string {
 
     let activeTag = 'all';
     let query = '';
+    const initialQuery = new URLSearchParams(window.location.search).get('k')?.trim() || '';
 
     function getStarred(): string[] {
       try { return JSON.parse(localStorage.getItem('starred-notes') || '[]'); } catch { return []; }
@@ -353,6 +354,11 @@ function getDomain(url: string | undefined): string {
       query = searchInput.value.toLowerCase().trim();
       filterItems();
     });
+
+    if (initialQuery) {
+      searchInput.value = initialQuery;
+      query = initialQuery.toLowerCase();
+    }
 
     starBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
