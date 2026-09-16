@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# Cloudflare redeploy trigger after private hermes-knowledge auth configuration.
 
 echo "=== 1. Init submodules (pull latest) ==="
 git submodule update --init --remote --recursive
