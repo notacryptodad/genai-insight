@@ -4,10 +4,11 @@ set -euo pipefail
 echo "=== 1. Init submodules (pull latest) ==="
 git submodule update --init --remote --recursive
 
-echo "=== 1b. Clone hermes-knowledge (private) ==="
+echo "=== 1b. Clone hermes-knowledge ==="
+HERMES_REPO="https://github.com/notacryptodad/hermes-knowledge.git"
 if [ ! -d "submodules/hermes-knowledge/.git" ]; then
   rm -rf submodules/hermes-knowledge
-  git clone --depth 1 "https://${GH_TOKEN}@github.com/notacryptodad/hermes-knowledge.git" submodules/hermes-knowledge
+  git clone --depth 1 "$HERMES_REPO" submodules/hermes-knowledge
 else
   cd submodules/hermes-knowledge && git pull origin main && cd ../..
 fi
