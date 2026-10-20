@@ -2,8 +2,20 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
-const notes = await getCollection('notes');
+const notes = (await getCollection('notes'))
+  .sort((a, b) => (b.data.date ?? '').localeCompare(a.data.date ?? ''));
 const noteCount = notes.length;
+const latestDate = notes[0]?.data.date;
+const latest = notes.slice(0, 6);
+
+const tagCounts = new Map<string, number>();
+for (const n of notes) for (const t of n.data.tags ?? []) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+const topTopics = [...tagCounts].sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+function domainOf(url?: string): string {
+  if (!url) return '';
+  try { return new URL(url).hostname.replace('www.', ''); } catch { return ''; }
+}
 
 const modules = [
   {
@@ -31,9 +43,50 @@ const modules = [
 ---
 <BaseLayout title="GenAI Insight">
   <section class="hero">
-    <p class="hero-tagline">Intelligence monitoring for the AI landscape</p>
-    <h1 class="hero-title">GenAI Insight</h1>
-    <p class="hero-desc">A curated knowledge hub for tracking GenAI trends, comparing platform capabilities, and measuring adoption maturity.</p>
+    <div class="hero-main">
+      <p class="hero-meta">{noteCount} notes · last added {latestDate}</p>
+      <h1 class="hero-title">What I'm reading about AI, and what's <em>worth keeping</em>.</h1>
+      <p class="hero-desc">Articles, threads and repos I come across, each saved with a short summary so I can find it again. Alongside that, a running comparison of what AWS, Azure, Google Cloud, BytePlus and Alibaba actually offer for building agents.</p>
+      <div class="hero-actions">
+        <a href="/pulse/" class="btn">Read the notes <span class="arrow">→</span></a>
+        <a href="/compareAI/" class="text-link">Cloud comparison</a>
+      </div>
+    </div>
+
+    <aside class="topics" aria-label="Notes by topic">
+      <p class="topics-head">By topic</p>
+      <ul>
+        {topTopics.map(([tag, count]) => (
+          <li>
+            <a href={`/pulse/?k=${encodeURIComponent(tag)}`}>
+              <span class="topic-name">{tag}</span>
+              <span class="topic-count">{count}</span>
+              <span class="topic-bar" style={`--w-frac:${(count / topTopics[0][1]).toFixed(3)}`}></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  </section>
+
+  <section class="recent">
+    <div class="recent-head">
+      <h2 class="section-label">Recently added</h2>
+      <a href="/pulse/" class="recent-all">All notes →</a>
+    </div>
+    <div class="recent-grid">
+      {latest.map((n) => (
+        <a href={`/pulse/notes/${n.id}/`} class="recent-card">
+          <span class="rc-meta">
+            {domainOf(n.data.url) && <img src={`https://www.google.com/s2/favicons?domain=${domainOf(n.data.url)}&sz=32`} alt="" width="14" height="14" loading="lazy" />}
+            <span class="rc-source">{(n.data.source ?? domainOf(n.data.url)).replace(/\s*\(.*\)$/, '')}</span>
+            <time datetime={n.data.date}>{n.data.date}</time>
+          </span>
+          <span class="rc-title">{n.data.title || n.id}</span>
+          {n.data.tags?.[0] && <span class="tag">{n.data.tags[0]}</span>}
+        </a>
+      ))}
+    </div>
   </section>
 
   <section class="pillars">
@@ -60,33 +113,185 @@ const modules = [
 
 <style>
   .hero {
-    padding: 3rem 0 2.5rem;
-    border-bottom: 1px solid var(--color-border);
-    margin-bottom: 2.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 3.5rem;
+    align-items: center;
+    padding: 1.5rem 0 3.5rem;
   }
-  .hero-tagline {
+  .hero-meta {
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    font-weight: 500;
-    color: var(--color-accent);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin: 0 0 0.5rem;
+    color: var(--color-text-tertiary);
+    margin: 0 0 1.1rem;
   }
   .hero-title {
-    font-size: 2.2rem;
-    font-weight: 750;
-    letter-spacing: -0.04em;
-    margin: 0 0 0.75rem;
-    line-height: 1.1;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(2.2rem, 4.4vw, 3.3rem);
+    font-weight: 600;
+    font-variation-settings: 'opsz' 96;
+    letter-spacing: -0.012em;
+    line-height: 1.08;
+    margin: 0 0 1.25rem;
+  }
+  .hero-title em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--color-accent);
   }
   .hero-desc {
     color: var(--color-text-secondary);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin: 0;
-    max-width: 52ch;
+    font-size: 1.02rem;
+    line-height: 1.7;
+    margin: 0 0 2rem;
+    max-width: 56ch;
   }
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--color-text);
+    color: var(--color-bg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.7em 1.3em;
+    border-radius: 999px;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  .btn:hover { color: var(--color-bg); opacity: 0.88; }
+  .btn:hover .arrow { transform: translateX(3px); }
+  .text-link {
+    font-size: 0.9rem;
+    font-weight: 550;
+    color: var(--color-text-secondary);
+    text-decoration: underline;
+    text-decoration-color: var(--color-border);
+    text-underline-offset: 4px;
+  }
+  .text-link:hover { color: var(--color-text); text-decoration-color: var(--color-text-tertiary); }
+
+  .topics {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-raised);
+    padding: 1.25rem 1.25rem 1rem;
+  }
+  .topics-head {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-tertiary);
+    margin: 0 0 0.75rem;
+  }
+  .topics ul { list-style: none; margin: 0; padding: 0; }
+  .topics a {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.42rem 0.6rem;
+    margin: 0 -0.6rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-size: 0.84rem;
+    isolation: isolate;
+  }
+  .topic-bar {
+    position: absolute;
+    inset: 3px auto 3px 0;
+    width: calc((100% - 3rem) * var(--w-frac));
+    background: color-mix(in srgb, var(--color-accent) var(--bar-mix), transparent);
+    border-left: 3px solid var(--color-accent);
+    border-radius: 3px var(--radius-sm) var(--radius-sm) 3px;
+    z-index: -1;
+    transition: background 0.15s;
+  }
+  .topics { --bar-mix: 24%; --bar-mix-hover: 38%; }
+  :global([data-theme="dark"]) .topics { --bar-mix: 38%; --bar-mix-hover: 55%; }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"])) .topics { --bar-mix: 38%; --bar-mix-hover: 55%; }
+  }
+  .topics a:hover { color: var(--color-text); }
+  .topics a:hover .topic-bar {
+    background: color-mix(in srgb, var(--color-accent) var(--bar-mix-hover), transparent);
+  }
+  .topic-name { font-weight: 550; }
+  .topic-count {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .recent { margin-bottom: 3rem; }
+  .recent-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .recent-all { font-size: 0.8rem; font-weight: 550; }
+  .recent-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .recent-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .recent-card:hover {
+    color: var(--color-text);
+    border-color: var(--color-text-tertiary);
+    transform: translateY(-2px);
+  }
+  .recent-card .tag { align-self: flex-start; margin-top: auto; }
+  .rc-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-text-tertiary);
+  }
+  .rc-meta img { border-radius: 3px; }
+  .rc-source {
+    color: var(--color-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .rc-meta time { margin-left: auto; flex-shrink: 0; }
+  .rc-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; gap: 2rem; }
+    .recent-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .recent-grid { grid-template-columns: 1fr; }
+  }
+
   .pillars {
     padding-bottom: 3rem;
   }
